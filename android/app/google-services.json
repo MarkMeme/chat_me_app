@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "694927813404",
+    "project_id": "inova-chat-app",
+    "storage_bucket": "inova-chat-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694927813404:android:1861504699da99a38f68d9",
+        "android_client_info": {
+          "package_name": "com.example.inova_chat_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694927813404-up4cl0ssj24a3pt4aa18ib728lr6puj9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFrWGlk834lvP8H4hqeHjVpFSz16vFFG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694927813404-up4cl0ssj24a3pt4aa18ib728lr6puj9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
