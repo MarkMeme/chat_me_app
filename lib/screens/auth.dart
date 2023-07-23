@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:inova_chat_app/widgets/user_image_picker.dart';
 
@@ -21,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _enteredEmail = '';
   var _enteredPass = '';
   File? _selectedImage;
+  var _isaouthing = false;
 
   void _sebmit() async {
     if (!_isLogin && _selectedImage == null) {
@@ -33,12 +35,22 @@ class _AuthScreenState extends State<AuthScreen> {
       _formKey.currentState!.save();
 
       try {
+        setState(() {
+          _isaouthing = true;
+        });
         if (_isLogin) {
           final authCred = await _firebase.signInWithEmailAndPassword(
               email: _enteredEmail, password: _enteredPass);
         } else {
           final authCred = await _firebase.createUserWithEmailAndPassword(
               email: _enteredEmail, password: _enteredPass);
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('users_images')
+              .child('${authCred.user!.uid}.jpg');
+          await storageRef.putFile(_selectedImage!);
+          final imageUrl = await storageRef.getDownloadURL();
+          print(imageUrl);
         }
       } on FirebaseAuthException catch (error) {
         if (error.code == 'email-already-in-use') {
@@ -47,6 +59,9 @@ class _AuthScreenState extends State<AuthScreen> {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(error.message ?? 'something went wrong')));
+        setState(() {
+          _isaouthing = false;
+        });
       }
     }
   }
@@ -121,25 +136,29 @@ class _AuthScreenState extends State<AuthScreen> {
                             },
                           ),
                           const SizedBox(height: 12),
-                          ElevatedButton(
-                            onPressed: _sebmit,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                            ),
-                            child: Text(_isLogin ? 'Login' : 'Signup'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                              });
-                            },
-                            child: Text(_isLogin
-                                ? 'Create an account'
-                                : 'I already have an account'),
-                          ),
+                          if (!_isaouthing)
+                               ElevatedButton(
+                                  onPressed: _sebmit,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                  ),
+                                  child: Text(_isLogin ? 'Login' : 'Signup'),
+                                ),
+                              
+                          
+                               TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _isLogin = !_isLogin;
+                                    });
+                                  },
+                                  child: Text(_isLogin
+                                      ? 'Create an account'
+                                      : 'I already have an account'),
+                                )
+                              else const CircularProgressIndicator(),
                         ],
                       ),
                     ),
