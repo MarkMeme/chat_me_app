@@ -20,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onPressed: FirebaseAuth.instance.signOut,
               icon: Icon(
                 Icons.exit_to_app_rounded,
-                size: 25,
+                size: 30,
                 color: Theme.of(context).colorScheme.primary,
               ))
         ],
