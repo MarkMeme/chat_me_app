@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -13,7 +14,16 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Chat'),
+        title: const Text('My Chat'),
+        actions: [
+          IconButton(
+              onPressed: FirebaseAuth.instance.signOut,
+              icon: Icon(
+                Icons.exit_to_app_rounded,
+                size: 25,
+                color: Theme.of(context).colorScheme.primary,
+              ))
+        ],
       ),
     );
   }
