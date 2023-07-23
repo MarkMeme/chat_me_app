@@ -13,6 +13,7 @@ class ChatScreen extends StatelessWidget {
         title: const Text('FlutterChat'),
         actions: [
           IconButton(
+
             onPressed: () {
               FirebaseAuth.instance.signOut();
             },
@@ -29,6 +30,7 @@ class ChatScreen extends StatelessWidget {
             child: ChatMessages(),
           ),
           NewMessage(),
+
         ],
       ),
     );
