@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var _isLogin = true;
   final _formKey = GlobalKey<FormState>();
   var _enteredEmail = '';
+  var _enteredUsername = '';
   var _enteredPass = '';
   File? _selectedImage;
   var _isaouthing = false;
@@ -50,7 +52,14 @@ class _AuthScreenState extends State<AuthScreen> {
               .child('${authCred.user!.uid}.jpg');
           await storageRef.putFile(_selectedImage!);
           final imageUrl = await storageRef.getDownloadURL();
-          print(imageUrl);
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(authCred.user!.uid)
+              .set({
+            'username': _enteredUsername,
+            'email': _enteredEmail,
+            'image_url': imageUrl,
+          });
         }
       } on FirebaseAuthException catch (error) {
         if (error.code == 'email-already-in-use') {
@@ -119,6 +128,23 @@ class _AuthScreenState extends State<AuthScreen> {
                               _enteredEmail = newValue!;
                             },
                           ),
+                          if (!_isLogin)
+                            TextFormField(
+                              decoration:
+                                  const InputDecoration(labelText: 'Username'),
+                              enableSuggestions: false,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.trim().length < 4) {
+                                  return 'Please enter at least 4 characters.';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _enteredUsername = value!;
+                              },
+                            ),
                           TextFormField(
                             decoration:
                                 const InputDecoration(labelText: 'Password'),
@@ -137,28 +163,27 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           const SizedBox(height: 12),
                           if (!_isaouthing)
-                               ElevatedButton(
-                                  onPressed: _sebmit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                  ),
-                                  child: Text(_isLogin ? 'Login' : 'Signup'),
-                                ),
-                              
-                          
-                               TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isLogin = !_isLogin;
-                                    });
-                                  },
-                                  child: Text(_isLogin
-                                      ? 'Create an account'
-                                      : 'I already have an account'),
-                                )
-                              else const CircularProgressIndicator(),
+                            ElevatedButton(
+                              onPressed: _sebmit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
+                              child: Text(_isLogin ? 'Login' : 'Signup'),
+                            ),
+                          if (!_isaouthing)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isLogin = !_isLogin;
+                                });
+                              },
+                              child: Text(_isLogin
+                                  ? 'Create an account'
+                                  : 'I already have an account'),
+                            ),
+                          if (_isaouthing) const CircularProgressIndicator(),
                         ],
                       ),
                     ),
