@@ -137,28 +137,27 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           const SizedBox(height: 12),
                           if (!_isaouthing)
-                               ElevatedButton(
-                                  onPressed: _sebmit,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                  ),
-                                  child: Text(_isLogin ? 'Login' : 'Signup'),
-                                ),
-                              
-                          
-                               TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isLogin = !_isLogin;
-                                    });
-                                  },
-                                  child: Text(_isLogin
-                                      ? 'Create an account'
-                                      : 'I already have an account'),
-                                )
-                              else const CircularProgressIndicator(),
+                            ElevatedButton(
+                              onPressed: _sebmit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer,
+                              ),
+                              child: Text(_isLogin ? 'Login' : 'Signup'),
+                            ),
+                          if (!_isaouthing)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isLogin = !_isLogin;
+                                });
+                              },
+                              child: Text(_isLogin
+                                  ? 'Create an account'
+                                  : 'I already have an account'),
+                            ),
+                          if (_isaouthing) const CircularProgressIndicator(),
                         ],
                       ),
                     ),
