@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:inova_chat_app/widgets/user_image_picker.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -17,8 +20,15 @@ class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
   var _enteredEmail = '';
   var _enteredPass = '';
+  File? _selectedImage;
 
   void _sebmit() async {
+    if (!_isLogin && _selectedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Make sure that you enter all data')));
+      return null;
+    }
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -29,7 +39,6 @@ class _AuthScreenState extends State<AuthScreen> {
         } else {
           final authCred = await _firebase.createUserWithEmailAndPassword(
               email: _enteredEmail, password: _enteredPass);
-          print(authCred);
         }
       } on FirebaseAuthException catch (error) {
         if (error.code == 'email-already-in-use') {
@@ -71,6 +80,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (!_isLogin)
+                            UserImagePicker(
+                              onPickImage: (pickedImage) {
+                                _selectedImage = pickedImage;
+                              },
+                            ),
                           TextFormField(
                             decoration: const InputDecoration(
                                 labelText: 'Email Address'),
